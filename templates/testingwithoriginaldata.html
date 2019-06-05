@@ -1,0 +1,122 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+
+{% if current_user.is_authenticated %}
+
+<!DOCTYPE HTML>
+<head>
+<style>
+  #backButton {
+	border-radius: 4px;
+	padding: 8px;
+	border: none;
+	font-size: 16px;
+	background-color: #2eacd1;
+	color: white;
+	position: relative;
+	top: 10px;
+	left: 10px;
+	cursor: pointer;
+  }
+  .invisible {
+    display: none;
+  }
+</style>
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-1.11.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='d3.v3.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='canvasjs.min.js') }}"></script>
+
+<script>
+//window.onload = function () {
+//window.onload=d3.csv("https://pastebin.com/raw/E4KMcf3T",function(data2){
+    
+window.onload=function(){
+    var NS1Sum = parseFloat('{{nets1}}');
+    var PISum = parseFloat('{{priceimp}}');
+    var MISum = parseFloat('{{miximp}}');
+    var VISum = parseFloat('{{volimp}}');
+    var AASum = parseFloat('{{aa}}');
+    totalSum = [NS1Sum,PISum,VISum,MISum,AASum];
+    
+    var chart = new CanvasJS.Chart("chartContainer", {
+	theme: "light1", // "light1", "ligh2", "dark1", "dark2"
+	animationEnabled: true,
+	title: {
+		text: "Simadvisory Data"
+	},
+	axisY: {
+		title: "Amount (in USD)",
+		prefix: "$",
+		lineThickness: 0,
+		suffix: "k"
+	},
+        
+    axisX:{
+        title: "Attributes",
+        lineThickness:0,
+    },
+        
+	data: [{
+		type: "waterfall",
+		indexLabel: "{y}",
+		indexLabelFontColor: "#000000",
+		indexLabelPlacement: "auto",
+		yValueFormatString: "#,##0k",
+		dataPoints: [
+			{label:"Net Sales 1",y: totalSum[0],color:"#ED7D31"},
+			{label: "Price Impact",y:totalSum[1]},
+			{label: "Volume Impact",y:totalSum[2]},
+			{label: "Mix Impact",y:totalSum[3]},
+			{label: "Acq/Attr", y:totalSum[4]},
+			{label: "Net Sales 2", isCumulativeSum: true,color: "#ED7D31" }
+		]
+	}]
+        
+});
+    
+chart.render();
+}
+</script>
+</head>
+<body>
+    <br>
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<button class="btn invisible" id="backButton">Back</button>
+</body>
+</html>
+{% else %}
+
+<center>
+  <section class="content" style="color: white">
+    <div class="col-sm-12">
+      <h1>Pricing Tool</h1>
+      <p class="lead">
+        HomePage
+      </p>
+      <p>
+        This application helps visualise the waterfall chart of data imported in the form of a csv file format
+      </p>
+      {% if not current_user.is_authenticated %}
+      <p>You can register as a regular user, or log in as a superuser with the following credentials: <br><br>
+
+        email: <b>admin</b> <br>
+        password: <b>admin</b> <br>
+        <br>
+        <p>
+          <a class="btn btn-primary" href="{{ url_for('security.login') }}">Login</a> <a class="btn btn-default" href="{{ url_for('security.register') }}">Register</a>
+        </p>
+        {% endif %}
+        <br>
+        <p>
+          <a class="btn btn-primary" href="/"><i class="glyphicon glyphicon-chevron-left"></i> Back</a>
+        </p>
+      </div>
+    </section>
+  </center>
+
+  <br><br><br><br><br><br><br><br><br>
+  <br><br><br><br><br><br><br><br><br><br>
+  {% endif %}
+
+  {% endblock body %}
