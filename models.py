@@ -1,6 +1,5 @@
 # coding: utf-8
-__author__ = 'Paul Cunningham'
-__copyright = 'Copyright 2018, Paul Cunningham'
+__author__ = "Rohit_Vemparala'
 
 from flask_security import RoleMixin, UserMixin
 from flask_sqlalchemy import SQLAlchemy
